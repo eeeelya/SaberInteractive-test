@@ -4,16 +4,6 @@ import os
 from motor.motor_asyncio import AsyncIOMotorClient
 
 
-def import_settings():
-    return {
-        "collection": os.environ.get("MONGO_COLLECTION", "default_coll"),
-        "db_name": os.environ.get("MONGO_DB", "default"),
-        "db_user": os.environ.get("MONGO_USER", "default_user"),
-        "db_pass": os.environ.get("MONGO_PASS", "default_pass"),
-        "db_url": os.environ.get("MONGO_URL"),
-    }
-
-
 def set_logger(filename: str) -> None:
     logger = logging.getLogger()
     file_handler = logging.FileHandler(filename=filename, mode="a")
@@ -23,7 +13,10 @@ def set_logger(filename: str) -> None:
     logger.setLevel(logging.INFO)
 
 
-async def init_mongo(db_name: str, db_url: str):
+async def init_mongo():
+    db_name = os.environ.get("MONGO_DB", "default")
+    db_url = os.environ.get("MONGO_URL")
+
     mongo_client = AsyncIOMotorClient(db_url)
     mongo_database = mongo_client[db_name]
     mongo_collections = {
